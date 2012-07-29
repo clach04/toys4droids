@@ -59,8 +59,8 @@ def main(argv=None):
                 defaultLocation = '.'
             serve_directory = defaultLocation
     
-    serve_directory = os.path.abspath(serve_directory)
     if serve_directory:
+        serve_directory = os.path.abspath(serve_directory)
         print 'serving dir', serve_directory
         os.chdir(serve_directory)
         run_web_server()
