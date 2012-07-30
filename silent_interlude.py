@@ -10,6 +10,7 @@ silent mode for an hour, 2 hours, etc. and auto exits silent mode.
 import os
 import sys
 import time
+import datetime
 
 import android
 
@@ -26,12 +27,14 @@ def sleep_for(num_secs):
     return True
 
 
-def on_silentmode_start():
+def on_silentmode_start(num_secs):
     global droid
     #silent_mode_func(True)
     droid.toggleRingerSilentMode(True)
+    end_time = datetime.datetime.now() + datetime.timedelta(seconds=num_secs)
+    end_time_str = end_time.strftime('%H:%M:%S (%Y-%m-%d )')
+    droid.notify('Phone in silent mode', 'ringer will be enabled at %s' % end_time_str)
     droid.makeToast('silent mode engaged')
-    # TODO add notification with ETA for silent mode end time
 
 
 def on_silentmode_stop():
@@ -84,7 +87,7 @@ def doit():
 
     if num_mins:
         num_secs = 60 * num_mins
-        on_silentmode_start()
+        on_silentmode_start(num_secs)
         sleep_for(num_secs)
         on_silentmode_stop()
 
