@@ -14,8 +14,6 @@ import time
 import android
 
 droid = android.Android()
-silent_mode_func = droid.toggleRingerSilentMode  # NOTE NOT a vibrate mode
-#silent_mode_func = droid.toggleVibrateMode  # NOTE Doesn't work 
 
 
 def sleep_for(num_secs):
@@ -32,8 +30,6 @@ def on_silentmode_start():
     global droid
     #silent_mode_func(True)
     droid.toggleRingerSilentMode(True)
-    # toggleVibrateMode() fails with java.lang.NullPointerException if ringer (2nd) param is missing
-    #droid.toggleVibrateMode(True, True)
     droid.makeToast('silent mode engaged')
     # TODO add notification with ETA for silent mode end time
 
@@ -43,7 +39,6 @@ def on_silentmode_stop():
     
     #silent_mode_func(False)
     droid.toggleRingerSilentMode(False)
-    #droid.toggleVibrateMode(False, True)
     ## TODO consider using setMediaVolume()
     droid.makeToast('silent mode dis-engaged')
 
@@ -89,7 +84,6 @@ def doit():
 
     if num_mins:
         num_secs = 60 * num_mins
-        num_secs = 10
         on_silentmode_start()
         sleep_for(num_secs)
         on_silentmode_stop()
