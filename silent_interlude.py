@@ -20,10 +20,13 @@ droid = android.Android()
 def sleep_for(num_secs):
     """Currently a simple os.sleep wrapper to sleep for num_secs.
     time.sleep() should suspend and be light on battery usage.
-    Ideally using android WaitFor so changed to ring mode can be detected
+    Ideally use android WaitFor so changed to ring mode can be detected,
+    assuming there is a ringer change event.
     Returns True if sleep was 100% complete.
     """
     time.sleep(num_secs)
+    #droid.eventRegisterForBroadcast('silent_interlude.pigsfly')
+    #droid.eventWaitFor('sleeptest_wait.pigsfly', num_secs * 1000)
     return True
 
 
@@ -87,9 +90,12 @@ def doit():
 
     if num_mins:
         num_secs = 60 * num_mins
+        # ensure python script works when screen is off
+        droid.wakeLockAcquirePartial()
         on_silentmode_start(num_secs)
         sleep_for(num_secs)
         on_silentmode_stop()
+        droid.wakeLockRelease() 
 
 
 def main(argv=None):
