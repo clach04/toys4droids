@@ -16,7 +16,7 @@ try:
     droid = android.Android()
 except ImportError:
     android = droid = None
-    import xerox  # from https://github.com/kennethreitz/xerox
+    import xerox  # NOTE use https://github.com/clach04/xerox/tree/win_no_crash until PR merged -- from https://github.com/kennethreitz/xerox
 
 
 def copy(new_text):
