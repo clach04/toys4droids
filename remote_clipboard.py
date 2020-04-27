@@ -71,7 +71,7 @@ def application(environ, start_response):
     result.append('</head>')
     print('DEBUG',repr(clipboard_contents))
     x = escape(clipboard_contents.encode('utf-8'))
-    '''
+    #'''
     result.append("""
     <pre>
         <code>""")
@@ -79,7 +79,7 @@ def application(environ, start_response):
     result.append("""</code>
     </pre>
     """)
-    '''
+    #'''
 
     result.append("""
     <form accept-charset="utf-8" action="setclipboard" method="POST" id="myform" name="myform">
