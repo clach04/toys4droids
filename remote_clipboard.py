@@ -15,16 +15,14 @@ except ImportError:
     webbrowser = None
 from wsgiref.simple_server import make_server
 try:
+    # py2
     from cgi import escape
+    from cgi import parse_qs
+    from urllib import quote, quote_plus
 except ImportError:
     # py3
     from html import escape
-
-try:
-    from cgi import parse_qs
-except ImportError:
-    # py3
-    from urllib.parse import parse_qs
+    from urllib.parse import quote, quote_plus
 
 
 try:
@@ -45,7 +43,8 @@ def gen_qrcode_url(url, image_size=547):
 
     See https://google-developers.appspot.com/chart/infographics/docs/overview
     """
-    url = urllib.quote(url)
+    url = quote(url)
+    #url = quote_plus(url)
     image_size_str = '%dx%d' % (image_size, image_size)
     result = 'https://chart.googleapis.com/chart?cht=qr&chs=%s&chl=%s' % (image_size_str, url)
     return result
