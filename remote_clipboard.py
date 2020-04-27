@@ -8,12 +8,17 @@
 import os
 import sys
 from wsgiref.simple_server import make_server
-from cgi import escape
+try:
+    from cgi import escape
+except ImportError:
+    # py3
+    from html import escape
+
 try:
     from cgi import parse_qs
 except ImportError:
     # py3
-    from cgi import parse_qsl as parse_qs
+    from urllib.parse import parse_qs
 
 
 try:
