@@ -8,7 +8,12 @@
 import os
 import sys
 from wsgiref.simple_server import make_server
-from cgi import parse_qs, escape
+from cgi import escape
+try:
+    from cgi import parse_qs
+except ImportError:
+    # py3
+    from cgi import parse_qsl as parse_qs
 
 
 try:
@@ -50,12 +55,12 @@ def application(environ, start_response):
     request_body = environ['wsgi.input'].read(request_body_size)
     d = parse_qs(request_body)
     new_clipboard_text = d.get('newtext')
-    print 'DEBUG new_clipboard_text', repr(new_clipboard_text)
+    print('DEBUG new_clipboard_text %s' % repr(new_clipboard_text))
     if new_clipboard_text is not None:
         new_clipboard_text = ''.join(new_clipboard_text)
         new_clipboard_text = new_clipboard_text.decode('utf-8')
         copy(new_clipboard_text)
-    print 'DEBUG new_clipboard_text', repr(new_clipboard_text)
+    print('DEBUG new_clipboard_text', repr(new_clipboard_text))
     ###################################################
 
     clipboard_contents = paste()
@@ -64,7 +69,7 @@ def application(environ, start_response):
     result.append('<head>')
     result.append('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">')
     result.append('</head>')
-    print 'DEBUG',repr(clipboard_contents)
+    print('DEBUG',repr(clipboard_contents))
     x = escape(clipboard_contents.encode('utf-8'))
     '''
     result.append("""
@@ -96,8 +101,8 @@ def doit():
     hostname = '0.0.0.0'
     #hostname = 'localhost'
     port = 8000
-    print 'Open http://%s:%d' % (hostname, port)
-    print 'Issue CTRL-C (Windows CTRL-Break instead) to stop'
+    print('Open http://%s:%d' % (hostname, port))
+    print('Issue CTRL-C (Windows CTRL-Break instead) to stop')
     httpd = make_server(hostname, port, application)
     httpd.serve_forever()
 
