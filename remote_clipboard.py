@@ -75,7 +75,7 @@ def application(environ, start_response):
     result.append('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">')
     result.append('</head>')
     print('DEBUG',repr(clipboard_contents))
-    x = escape(clipboard_contents.encode('utf-8'))
+    x = escape(clipboard_contents)
     #'''
     result.append("""
     <pre>
@@ -99,7 +99,8 @@ def application(environ, start_response):
     </form>
     """)
     result.append('</html>')
-    return result
+    bresult = ''.join(result).encode('utf-8')
+    return [bresult]
 
 
 def doit():
