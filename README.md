@@ -10,5 +10,5 @@ Some tools are Android specific and require [SL4A (aka android scripting)](http:
 
   * [remote\_clipboard.py](https://bitbucket.org/clach04/toys4droids/src/tip//remote_clipboard.py) - portable mini web app that allows the clipboard to be reviewed and updated.
       * relies on xerox
-            * Windows requires fix https://github.com/clach04/xerox/tree/win_no_crash
-            * Linux requires `xclip` binary
+          * Windows requires fix https://github.com/clach04/xerox/tree/win_no_crash
+          * Linux requires `xclip` binary
