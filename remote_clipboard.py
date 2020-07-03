@@ -32,6 +32,47 @@ except ImportError:
     android = droid = None
     import xerox  # NOTE use https://github.com/clach04/xerox/tree/win_no_crash until PR merged -- from https://github.com/kennethreitz/xerox
 
+try:
+    import segno  # preferred
+except ImportError:
+    segno = None
+
+try:
+    import pyqrcodeng
+except ImportError:
+    pyqrcodeng = None
+
+
+def display_console_qrcode_pyqrcodeng(url):
+    # NOTE pyqrcodeng could be used for desktop (maybe) web browser launching with locally generated SVG and/or PNG
+    qr = pyqrcodeng.create(url)
+    """
+    print(qr.text())
+
+    print('-' *65)
+    text_scale_factor_width = 2
+    white_char = u'\u2588'
+    #white_char = '#' # does not work with my phone qrcode scanner/reader
+    #white_char = '*' # does not work with my phone qrcode scanner/reader
+    black_char = ' '
+    print(qr.text().replace('1', black_char * text_scale_factor_width).replace('0', white_char * text_scale_factor_width).encode('cp437'))
+    print('-' *65)
+    """
+    qr.term()  # this "prints" to stdout/tty/console (works for win32)
+    #print(qr.terminal())  # this generates ANSI/VT100 escape sequences (not suitable for win32)
+
+
+def display_console_qrcode_segno(url):
+    # NOTE segno could be used for desktop (maybe) web browser launching with locally generated SVG and/or PNG
+    qr = segno.make(url)
+    #print(dir(qr))
+    #print(qr)
+    qr.terminal()
+
+
+display_console_qrcode = None
+if pyqrcodeng: display_console_qrcode = display_console_qrcode_pyqrcodeng  # note officially unmaintained
+if segno: display_console_qrcode = display_console_qrcode_segno
 
 def gen_qrcode_url(url, image_size=547):
     """Construct QR generator google URL with max size, from:
@@ -48,6 +89,7 @@ def gen_qrcode_url(url, image_size=547):
     image_size_str = '%dx%d' % (image_size, image_size)
     result = 'https://chart.googleapis.com/chart?cht=qr&chs=%s&chl=%s' % (image_size_str, url)
     return result
+
 
 # Utility function to guess the IP (as a string) where the server can be
 # reached from the outside. Quite nasty problem actually.
@@ -157,6 +199,8 @@ def doit():
     ip_addr = find_ip()
     url_str = "http://%s:%s/" % (ip_addr, port)
     print(url_str)
+    if display_console_qrcode:
+        display_console_qrcode(url_str)
     if webbrowser:
         qrcode_url = gen_qrcode_url(url_str)
         webbrowser.open(qrcode_url)
