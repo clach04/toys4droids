@@ -11,7 +11,7 @@ Some tools are Android specific and require [SL4A (aka android scripting)](http:
   * [remote\_clipboard.py](https://bitbucket.org/clach04/toys4droids/src/tip//remote_clipboard.py) - portable mini web app that allows the clipboard to be reviewed and updated.
       * relies on xerox
           * Windows requires fix https://github.com/clach04/xerox/tree/win_no_crash
-          * Linux requires `xclip` binary
+          * Linux requires `xclip` binary - `sudo apt install xclip`
       * optional QR Code generation for console/terminal, install one of:
           * https://github.com/pyqrcode/pyqrcodeNG
           * https://github.com/heuer/segno
