@@ -3,6 +3,11 @@
 # vim:ts=4:sw=4:softtabstop=4:smarttab:expandtab
 #
 """View and change clipboard remotely
+
+TODO Python3 support
+
+TODO android support into xerox?
+
 """
 
 import urllib  # FIXME py2 only
@@ -199,6 +204,7 @@ def doit():
     ip_addr = find_ip()
     url_str = "http://%s:%s/" % (ip_addr, port)
     print(url_str)
+    #display_console_qrcode = webbrowser = None  # Quick disable launch browser and QRcode
     if display_console_qrcode:
         display_console_qrcode(url_str)
     if webbrowser:
