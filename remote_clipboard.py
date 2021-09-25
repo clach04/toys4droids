@@ -38,12 +38,12 @@ except ImportError:
     import xerox  # NOTE use https://github.com/clach04/xerox/tree/win_no_crash until PR merged -- from https://github.com/kennethreitz/xerox
 
 try:
-    import segno  # preferred
+    import segno  # preferred - https://github.com/heuer/segno
 except ImportError:
     segno = None
 
 try:
-    import pyqrcodeng
+    import pyqrcodeng  # https://github.com/pyqrcode/pyqrcodeNG
 except ImportError:
     pyqrcodeng = None
 
