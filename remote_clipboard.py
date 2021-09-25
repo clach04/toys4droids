@@ -56,7 +56,7 @@ def display_console_qrcode_pyqrcodeng(url):
 
     print('-' *65)
     text_scale_factor_width = 2
-    white_char = u'\u2588'
+    white_char = u'\u2588'  # Full Block https://www.compart.com/en/unicode/U+2588
     #white_char = '#' # does not work with my phone qrcode scanner/reader
     #white_char = '*' # does not work with my phone qrcode scanner/reader
     black_char = ' '
