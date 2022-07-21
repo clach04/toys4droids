@@ -15,7 +15,10 @@ import os
 import socket
 import sys
 try:
-    import webbrowser
+    if os.environ.get('LAUNCH_BROWSER'):
+        import webbrowser
+    else:
+        raise ImportError
 except ImportError:
     webbrowser = None
 from wsgiref.simple_server import make_server
