@@ -241,10 +241,11 @@ def doit():
     url_str = "http://%s:%s/" % (ip_addr, port)
     print(url_str)
     #display_console_qrcode = webbrowser = None  # Quick disable launch browser and QRcode
+    qrcode_url = gen_qrcode_url(url_str)
+    print(qrcode_url)
     if display_console_qrcode:
         display_console_qrcode(url_str)
     if webbrowser:
-        qrcode_url = gen_qrcode_url(url_str)
         webbrowser.open(qrcode_url)
 
     httpd = make_server(hostname, port, application)
