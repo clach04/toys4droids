@@ -25,9 +25,11 @@ try:
     from cgi import parse_qs
     from urllib import quote, quote_plus
 except ImportError:
+    # Python 3.8 and later 
     # py3
     from html import escape
     from urllib.parse import quote, quote_plus
+    from urllib.parse import parse_qs
 
 
 try:
@@ -35,7 +37,6 @@ try:
     droid = android.Android()
 except ImportError:
     android = droid = None
-    import xerox  # NOTE use https://github.com/clach04/xerox/tree/win_no_crash until PR merged -- from https://github.com/kennethreitz/xerox
 
 try:
     import segno  # preferred - https://github.com/heuer/segno
@@ -119,6 +120,22 @@ def find_ip ():
 
    return candidates[0]
 
+if android is None:
+    try:
+        import xerox  # NOTE use https://github.com/clach04/xerox/tree/win_no_crash until PR merged -- from https://github.com/kennethreitz/xerox
+    except ImportError:
+        if os.environ.get('FAKE_XEROX') is None:
+            raise
+        else:
+            # no clipboard access, so store/cache locally
+            class FakeXerox:
+                def __init__(self):
+                    self.txt = ''
+                def copy(self, new_text):
+                    self.txt = new_text
+                def paste(self):
+                    return self.txt
+            xerox = FakeXerox()
 
 def copy(new_text):
     if droid:
@@ -138,23 +155,38 @@ def application(environ, start_response):
     status = '200 OK'
     response_headers = [('Content-Type', 'text/html')]
     # content length?
-    start_response(status, response_headers)
 
+    path_info = environ['PATH_INFO']
 
-    ###################################################
+    # Returns a dictionary in which the values are lists
+    get_dict = parse_qs(environ['QUERY_STRING'])
+
+    # POST values
     # the environment variable CONTENT_LENGTH may be empty or missing
     try:
-      request_body_size = int(environ.get('CONTENT_LENGTH', 0))
+        request_body_size = int(environ.get('CONTENT_LENGTH', 0))
     except (ValueError):
-      request_body_size = 0
-
+        request_body_size = 0
+    # Read POST body
     request_body = environ['wsgi.input'].read(request_body_size)
-    d = parse_qs(request_body)
+    """
+    print('DEBUG request_body_size', repr(request_body_size))
+    if request_body_size:
+        print('read with size')
+        request_body = environ['wsgi.input'].read(request_body_size)
+    else:
+        print('read with NO size')
+        request_body = environ['wsgi.input'].read()  # seen under Linux, if zero passed in, will read zero bytes!
+    """
+    print('DEBUG request_body', repr(request_body))
+    sys.stdout.flush()  # DEBUG
+    d = parse_qs(request_body.decode('utf-8'))
+    print('DEBUG d', repr(d))
     new_clipboard_text = d.get('newtext')
     print('DEBUG new_clipboard_text %s' % repr(new_clipboard_text))
     if new_clipboard_text is not None:
         new_clipboard_text = ''.join(new_clipboard_text)
-        new_clipboard_text = new_clipboard_text.decode('utf-8')
+        new_clipboard_text = new_clipboard_text
         copy(new_clipboard_text)
     print('DEBUG new_clipboard_text', repr(new_clipboard_text))
     ###################################################
@@ -165,7 +197,7 @@ def application(environ, start_response):
     result.append('<head>')
     result.append('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">')
     result.append('</head>')
-    print('DEBUG',repr(clipboard_contents))
+    print('DEBUG clipboard contents=',repr(clipboard_contents))
     x = escape(clipboard_contents)
     #'''
     result.append("""
@@ -190,14 +222,15 @@ def application(environ, start_response):
     </form>
     """)
     result.append('</html>')
-    bresult = ''.join(result).encode('utf-8')
-    return [bresult]
+    #import pdb ; pdb.set_trace()
+    start_response(status, response_headers)
+    return [''.join(result).encode('utf-8')]
 
 
 def doit():
     hostname = '0.0.0.0'
     #hostname = 'localhost'
-    port = 8000
+    port = int(os.environ.get('PORT', 8000))
     print('Open http://%s:%d' % (hostname, port))
     print('Issue CTRL-C (Windows CTRL-Break instead) to stop')
 
@@ -219,6 +252,7 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
 
+    print('Python %s on %s' % (sys.version, sys.platform))
     doit()
 
     return 0
