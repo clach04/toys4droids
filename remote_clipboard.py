@@ -4,13 +4,12 @@
 #
 """View and change clipboard remotely
 
-TODO Python3 support
-
 TODO android support into xerox?
 
+See replacement https://github.com/clach04/clipboard-confusion.git
+with more features.
 """
 
-import urllib  # FIXME py2 only
 import os
 import socket
 import sys
@@ -23,16 +22,16 @@ except ImportError:
     webbrowser = None
 from wsgiref.simple_server import make_server
 try:
-    # py2
-    from cgi import escape
-    from cgi import parse_qs
-    from urllib import quote, quote_plus
-except ImportError:
     # Python 3.8 and later 
     # py3
     from html import escape
     from urllib.parse import quote, quote_plus
     from urllib.parse import parse_qs
+except ImportError:
+    # py2
+    from cgi import escape
+    from cgi import parse_qs
+    from urllib import quote, quote_plus
 
 
 try:
